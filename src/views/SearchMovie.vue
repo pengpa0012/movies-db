@@ -53,7 +53,6 @@ export default {
       movieDetails.value.genres = id.genres;
       movieDetails.value.torrents = id.torrents;
       movieDetails.value.url = id.url;
-      console.log(movieDetails.value, id);
     }
 
     function closeBtn() {
