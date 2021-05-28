@@ -53,6 +53,7 @@ export default {
   top: 50%;
   left: 50%;
   width: 80%;
+  max-width: 1000px;
   min-height: 500px;
   transform: translate(-50%, -50%) scale(0);
   background: #2e2e2e;
