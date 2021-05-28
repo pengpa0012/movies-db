@@ -279,6 +279,7 @@ h4 {
   .movie-wrap {
     grid-template-columns: 1fr;
     justify-items: center;
+    padding: 0;
   }
 
   .box {

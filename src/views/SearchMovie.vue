@@ -22,7 +22,7 @@
 <script>
 import movieBox from "@/components/movieBox";
 import popUp from "@/components/popUp";
-import { ref } from "vue";
+import { onMounted, ref } from "vue";
 export default {
   name: "SearchMovie",
   components: { movieBox, popUp },
@@ -31,6 +31,14 @@ export default {
     const movieSearch = ref("");
     let movieDetails = ref({});
     let popShow = ref(false);
+
+    onMounted(() => {
+      fetch(`https://yts.mx/api/v2/list_movies.json?query_term=batman`)
+        .then((res) => res.json())
+        .then((data) => {
+          movieData.value.push(data.data.movies);
+        });
+    });
 
     function searchMovie() {
       if (movieSearch.value === "") return;
