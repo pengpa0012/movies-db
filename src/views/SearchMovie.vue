@@ -90,7 +90,7 @@ export default {
 }
 
 .flex-input input {
-  width: 80%;
+  width: 100%;
   font-size: 1.2rem;
   padding: 8px 5px;
   margin-right: 10px;
