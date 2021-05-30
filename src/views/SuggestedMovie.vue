@@ -1,13 +1,6 @@
 <template>
   <div>
-    <!-- 
-    <div class="filter" v-if="!showLoader">
-      <span>Sort By</span>
-      <div class="radio">
-        <span>Score</span>
-        <input type="checkbox" v-model="checkScore" @click="sortByScore" />
-      </div>
-    </div> -->
+    <sort v-if="!showLoader" v-model="checkScore" @check-score="sortByScore" />
     <div class="movie-wrap">
       <loader v-if="showLoader" class="loader" />
       <div v-for="movie in movieData[0]" :key="movie.id">
@@ -28,18 +21,19 @@
 import movieBox from "@/components/movieBox";
 import popUp from "@/components/popUp";
 import loader from "@/components/loader";
+import sort from "@/components/sort";
 import { ref } from "vue";
 export default {
   name: "SuggestedMovie",
-  components: { movieBox, popUp, loader },
+  components: { movieBox, popUp, loader, sort },
   setup() {
     const movieData = ref([]);
     let popShow = ref(false);
     let movieDetails = ref({});
     let showLoader = ref(true);
-    /* let checkScore = ref(false); */
+    let checkScore = ref(false);
 
-    // for displaying 20 movies
+    // for displaying 50 movies
     fetch(`https://yts.mx/api/v2/list_movies.json?limit=50`)
       .then((res) => res.json())
       .then((data) => {
@@ -56,26 +50,24 @@ export default {
       movieDetails.value.genres = id.genres;
       movieDetails.value.torrents = id.torrents;
       movieDetails.value.url = id.url;
-      console.log(movieDetails.value);
     }
 
-    /* function sortByScore() {
+    function sortByScore() {
       checkScore.value = !checkScore.value;
       if (checkScore.value == false) {
-        let sortedMoviesByScore = movieData.value[0].sort((a, b) => {
-          return parseInt(a.rating) - parseInt(b.rating);
+        let sortedDescend = movieData.value[0].sort((a, b) => {
+          return parseFloat(a.rating) - parseFloat(b.rating);
         });
         movieData.value = [];
-        movieData.value.push(sortedMoviesByScore);
+        movieData.value.push(sortedDescend);
         return;
       }
-      let sortedMoviesByScore = movieData.value[0].sort((a, b) => {
-        return parseInt(b.rating) - parseInt(a.rating);
+      let sortedAscend = movieData.value[0].sort((a, b) => {
+        return parseFloat(b.rating) - parseFloat(a.rating);
       });
       movieData.value = [];
-      movieData.value.push(sortedMoviesByScore);
-      console.log(movieData.value);
-    } */
+      movieData.value.push(sortedAscend);
+    }
 
     function closeBtn() {
       popShow.value = false;
@@ -88,16 +80,9 @@ export default {
       movieDetails,
       closeBtn,
       showLoader,
-      /*  sortByScore, */
+      sortByScore,
+      checkScore,
     };
   },
 };
 </script>
-
-<style scoped>
-/* 
-.filter,
-.filter .radio {
-  display: flex;
-} */
-</style>

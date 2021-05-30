@@ -214,11 +214,12 @@ h4 {
 
 @media (max-width: 900px) {
   .heading {
-    padding: 3rem 30px;
+    padding: 3rem 30px 1rem 30px;
   }
 
   .flex {
     padding: 0 15px;
+    margin-top: 0;
   }
 
   .heading span {

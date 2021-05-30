@@ -4,15 +4,12 @@
       <input v-model="movieSearch" placeholder="Search a movie..." />
       <button @click="searchMovie">Search</button>
     </div>
-    <!--     <div class="filter" v-if="!showLoader">
-      <span>Sort By</span>
-      <div class="radio">
-        <span>Score</span>
-        <input type="checkbox" v-model="checkScore" @click="sortByScore" />
-      </div>
-    </div> -->
+    <sort v-if="showSort" v-model="checkScore" @check-score="sortByScore" />
     <div class="movie-wrap">
       <loader v-if="showLoader" class="loader" />
+      <div v-if="err" class="error-message">
+        {{ "Error, try different keywords" }}
+      </div>
       <div v-for="movie in movieData[0]" :key="movie.id">
         <movieBox :movieInfo="movie" @view-movie="viewMovie" />
       </div>
@@ -31,17 +28,20 @@
 import movieBox from "@/components/movieBox";
 import popUp from "@/components/popUp";
 import loader from "@/components/loader";
+import sort from "@/components/sort";
 import { onMounted, ref } from "vue";
 export default {
   name: "SearchMovie",
-  components: { movieBox, popUp, loader },
+  components: { movieBox, popUp, loader, sort },
   setup() {
     let movieData = ref([]);
     const movieSearch = ref("");
     let movieDetails = ref({});
     let popShow = ref(false);
     let showLoader = ref(true);
-    /* let checkScore = ref(false); */
+    let showSort = ref(true);
+    let checkScore = ref(false);
+    let err = ref(false);
 
     onMounted(() => {
       fetch(`https://yts.mx/api/v2/list_movies.json?query_term=batman`)
@@ -53,16 +53,26 @@ export default {
     });
 
     function searchMovie() {
+      if (movieSearch.value === "") {
+        alert("Enter some keywords");
+        return;
+      }
+      err.value = false;
       showLoader.value = true;
-      if (movieSearch.value === "") return;
       movieData.value.pop();
       fetch(
         `https://yts.mx/api/v2/list_movies.json?query_term=${movieSearch.value}`
       )
         .then((res) => res.json())
         .then((data) => {
+          if (data.data.movies == undefined) {
+            showLoader.value = false;
+            showSort.value = false;
+            err.value = true;
+            return;
+          }
           showLoader.value = false;
-
+          showSort.value = true;
           movieData.value.push(data.data.movies);
         });
     }
@@ -78,23 +88,22 @@ export default {
       movieDetails.value.url = id.url;
     }
 
-    /* function sortByScore() {
+    function sortByScore() {
       checkScore.value = !checkScore.value;
       if (checkScore.value == false) {
-        let sortedMoviesByScore = movieData.value[0].sort((a, b) => {
-          return parseInt(a.rating) - parseInt(b.rating);
+        let sortedDescend = movieData.value[0].sort((a, b) => {
+          return parseFloat(a.rating) - parseFloat(b.rating);
         });
         movieData.value = [];
-        movieData.value.push(sortedMoviesByScore);
+        movieData.value.push(sortedDescend);
         return;
       }
-      let sortedMoviesByScore = movieData.value[0].sort((a, b) => {
-        return parseInt(b.rating) - parseInt(a.rating);
+      let sortedAscend = movieData.value[0].sort((a, b) => {
+        return parseFloat(b.rating) - parseFloat(a.rating);
       });
       movieData.value = [];
-      movieData.value.push(sortedMoviesByScore);
-      console.log(movieData.value);
-    } */
+      movieData.value.push(sortedAscend);
+    }
 
     function closeBtn() {
       popShow.value = false;
@@ -108,9 +117,12 @@ export default {
       closeBtn,
       movieDetails,
       popShow,
-      showLoader /* 
+      showLoader,
+      showSort,
+      sort,
       sortByScore,
-      checkScore, */,
+      checkScore,
+      err,
     };
   },
 };
@@ -119,7 +131,7 @@ export default {
 <style scoped>
 .flex-input {
   margin-top: 0;
-  margin-bottom: 2rem;
+  margin-bottom: 1rem;
   padding: 0 30px;
   display: flex;
   justify-content: center;
@@ -154,9 +166,8 @@ export default {
   background: #253342;
 }
 
-.filter,
-.filter .radio {
-  display: flex;
+.error-message {
+  margin: 2rem 0;
 }
 
 @media (max-width: 900px) {
