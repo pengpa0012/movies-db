@@ -104,7 +104,7 @@ export default {
 }
 
 .pop-up .yts-links .link span {
-  border: solid 1px #fff;
+  border: solid 1px transparent;
   color: #fff;
   border-radius: 3px;
   padding: 3px 8px;

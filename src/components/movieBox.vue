@@ -17,17 +17,11 @@ export default {
   props: {
     movieInfo: Object,
   },
-  setup() {
-    /* const movieDetails = ref({
-      title: "train",
-      year: "2020",
-      summary: "all ded",
-    }); */
-    return {
-      /* movieDetails, */
-    };
-  },
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+.box {
+  max-width: 300px;
+}
+</style>

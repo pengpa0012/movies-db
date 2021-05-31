@@ -39,7 +39,7 @@ export default {
     let movieDetails = ref({});
     let popShow = ref(false);
     let showLoader = ref(true);
-    let showSort = ref(true);
+    let showSort = ref(false);
     let checkScore = ref(false);
     let err = ref(false);
 
@@ -48,6 +48,7 @@ export default {
         .then((res) => res.json())
         .then((data) => {
           showLoader.value = false;
+          showSort.value = true;
           movieData.value.push(data.data.movies);
         });
     });
@@ -59,7 +60,7 @@ export default {
       }
       err.value = false;
       showLoader.value = true;
-      movieData.value.pop();
+      movieData.value = [];
       fetch(
         `https://yts.mx/api/v2/list_movies.json?query_term=${movieSearch.value}`
       )
