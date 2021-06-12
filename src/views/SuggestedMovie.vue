@@ -1,8 +1,9 @@
 <template>
   <div>
-    <sort v-if="!showLoader" v-model="checkScore" @check-score="sortByScore" />
+    <sort v-if="showSort" v-model="checkScore" @check-score="sortByScore" />
     <div class="movie-wrap">
       <loader v-if="showLoader" class="loader" />
+      <errorMsg v-if="!showLoader" />
       <div v-for="movie in movieData[0]" :key="movie.id">
         <movieBox :movieInfo="movie" @view-movie="viewMovie" />
       </div>
@@ -22,15 +23,18 @@ import movieBox from "@/components/movieBox";
 import popUp from "@/components/popUp";
 import loader from "@/components/loader";
 import sort from "@/components/sort";
+import errorMsg from "@/components/errorMsg";
+
 import { ref } from "vue";
 export default {
   name: "SuggestedMovie",
-  components: { movieBox, popUp, loader, sort },
+  components: { movieBox, popUp, loader, sort, errorMsg },
   setup() {
     const movieData = ref([]);
     let popShow = ref(false);
     let movieDetails = ref({});
     let showLoader = ref(true);
+    let showSort = ref(false);
     let checkScore = ref(false);
 
     // for displaying 50 movies
@@ -38,8 +42,14 @@ export default {
       .then((res) => res.json())
       .then((data) => {
         showLoader.value = false;
+        showSort.value = true;
         movieData.value.push(data.data.movies);
-      });
+      })
+      .catch(
+        setTimeout(() => {
+          showLoader.value = false;
+        }, 8000)
+      );
 
     function viewMovie(id) {
       popShow.value = true;
@@ -82,6 +92,8 @@ export default {
       showLoader,
       sortByScore,
       checkScore,
+      showSort,
+      errorMsg,
     };
   },
 };

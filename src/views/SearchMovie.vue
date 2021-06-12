@@ -7,6 +7,7 @@
     <sort v-if="showSort" v-model="checkScore" @check-score="sortByScore" />
     <div class="movie-wrap">
       <loader v-if="showLoader" class="loader" />
+      <errorMsg v-if="!showLoader" />
       <div v-if="err" class="error-message">
         {{ "Error, try different keywords" }}
       </div>
@@ -29,10 +30,12 @@ import movieBox from "@/components/movieBox";
 import popUp from "@/components/popUp";
 import loader from "@/components/loader";
 import sort from "@/components/sort";
+import errorMsg from "@/components/errorMsg";
+
 import { onMounted, ref } from "vue";
 export default {
   name: "SearchMovie",
-  components: { movieBox, popUp, loader, sort },
+  components: { movieBox, popUp, loader, sort, errorMsg },
   setup() {
     let movieData = ref([]);
     const movieSearch = ref("");
@@ -50,7 +53,12 @@ export default {
           showLoader.value = false;
           showSort.value = true;
           movieData.value.push(data.data.movies);
-        });
+        })
+        .catch(
+          setTimeout(() => {
+            showLoader.value = false;
+          }, 8000)
+        );
     });
 
     function searchMovie() {
@@ -75,7 +83,12 @@ export default {
           showLoader.value = false;
           showSort.value = true;
           movieData.value.push(data.data.movies);
-        });
+        })
+        .catch(
+          setTimeout(() => {
+            showLoader.value = false;
+          }, 8000)
+        );
     }
 
     function viewMovie(id) {
@@ -124,6 +137,7 @@ export default {
       sortByScore,
       checkScore,
       err,
+      errorMsg,
     };
   },
 };
