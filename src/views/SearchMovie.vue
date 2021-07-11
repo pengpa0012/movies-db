@@ -7,7 +7,7 @@
     <sort v-if="showSort" v-model="checkScore" @check-score="sortByScore" />
     <div class="movie-wrap">
       <loader v-if="showLoader" class="loader" />
-      <errorMsg v-if="!showLoader" />
+      <errorMsg v-if="showError" />
       <div v-if="err" class="error-message">
         {{ "Error, try different keywords" }}
       </div>
@@ -42,6 +42,7 @@ export default {
     let movieDetails = ref({});
     let popShow = ref(false);
     let showLoader = ref(true);
+    let showError = ref(false);
     let showSort = ref(false);
     let checkScore = ref(false);
     let err = ref(false);
@@ -57,6 +58,7 @@ export default {
         .catch(
           setTimeout(() => {
             showLoader.value = false;
+            showError.value = true;
           }, 8000)
         );
     });
@@ -132,6 +134,7 @@ export default {
       movieDetails,
       popShow,
       showLoader,
+      showError,
       showSort,
       sort,
       sortByScore,

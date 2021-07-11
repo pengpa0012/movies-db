@@ -3,7 +3,7 @@
     <sort v-if="showSort" v-model="checkScore" @check-score="sortByScore" />
     <div class="movie-wrap">
       <loader v-if="showLoader" class="loader" />
-      <errorMsg v-if="!showLoader" />
+      <errorMsg v-if="showError" />
       <div v-for="movie in movieData[0]" :key="movie.id">
         <movieBox :movieInfo="movie" @view-movie="viewMovie" />
       </div>
@@ -34,6 +34,7 @@ export default {
     let popShow = ref(false);
     let movieDetails = ref({});
     let showLoader = ref(true);
+    let showError = ref(false);
     let showSort = ref(false);
     let checkScore = ref(false);
 
@@ -48,6 +49,7 @@ export default {
       .catch(
         setTimeout(() => {
           showLoader.value = false;
+          showError.value = true;
         }, 8000)
       );
 
@@ -90,6 +92,7 @@ export default {
       movieDetails,
       closeBtn,
       showLoader,
+      showError,
       sortByScore,
       checkScore,
       showSort,
